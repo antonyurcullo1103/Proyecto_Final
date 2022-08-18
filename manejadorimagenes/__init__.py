@@ -1,1 +1,1 @@
-__all__ = ["imagen", "diagnostico_rayosx"]
+__all__ = ["imagen", "diagnostico_rayosx", "categoria"]
