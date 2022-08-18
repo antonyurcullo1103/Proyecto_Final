@@ -121,6 +121,7 @@ class Imagen:
     def get_frames_in_image(self):
         return self.frames_in_image
 
+
 """
 # Probando la clase Imagen
 my_image = Imagen("..//COVID-19_Radiography_Dataset//Normal//images//Normal-1.png")
