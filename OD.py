@@ -59,24 +59,5 @@ def download():
   sh("unzip './dataset/covid19-radiography-database.zip' -d ./dataset")
   sh("rm ./dataset/covid19-radiography-database.zip")
 
+download()
 
-def connection_git():
-  # Definir mi identidad
-  sh("git config --global user.email 'antony_ur1103@hotmail.com'")
-  sh("git config --global user.name 'antonyurcullo1103'")
-
-
-  # Inicializar un repositorio git
-  #git init
-
-  # Agregaremos un archivo .gitignore para que nos ayude a ignorar la carpeta dataset
-  # la cual debe ser controlada por DVC y no por Git
-  #sh("echo 'dataset' > .gitignore")
-  sh("git status")
-  sh("git add .")
-  sh("git commit -m 'First commit'")
-  #!git remote add origin git@github.com:EdwinTSalcedo/DVC.git
-  sh("git push origin Cargado_Inicial_Datasets")
-  
-#download()
-connection_git()
