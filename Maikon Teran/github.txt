@@ -1,0 +1,11 @@
+git clone url
+
+git checkout  -b branchName
+
+git add .
+
+git commit -m "crud de imagen"
+
+git tag -a v1 -m "crud de imagen"
+
+git push origin master --tags
