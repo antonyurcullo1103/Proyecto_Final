@@ -1,4 +1,6 @@
 import io
+from msilib.schema import ComboBox
+import os
 import openpyxl
 import pandas as pd
 from tkinter import *
@@ -31,7 +33,7 @@ def file_openbox(seleccion):
    
     if seleccion:
         try:
-            filename = ('Maikon Teran/COVID-19_Radiography_Dataset/'+(r"{}".format(seleccion))+'.metadata.xlsx')
+            filename = ('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(seleccion))+'.metadata.xlsx')
             df = pd.read_excel(filename, engine='openpyxl')
         except ValueError:
             messagebox.showinfo("Alerta","Archivo no puede ser abierto... intenta de nuevo")
@@ -60,7 +62,7 @@ def clear_tree():
 ##Funcion agregar registro al excel desde el BOTON
 def agregarRegistro():
     categoria= ComboboxCategoria.get()
-    wb=openpyxl.load_workbook(('Maikon Teran/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+    wb=openpyxl.load_workbook(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
     ws = wb['Sheet1']
  
     File_Name = str(entryFile_Name.get())
@@ -68,13 +70,13 @@ def agregarRegistro():
     Size = str(entrySize.get())
     Url = str(entryUrl.get())
     if File_Name == "" or Format == " ":
-        print("Error Inserting Id")
-    if Format == "" or Format == " ":
-        print("Error Inserting Name")
+        messagebox.showinfo("Error", "Inserte File_Name!")
+    if Format == "" or Format == " ":     
+        messagebox.showinfo("Error", "Inserte Format!")
     if Size == "" or Size == " ":
-        print("Error Inserting Price")
+        messagebox.showinfo("Error", "Inserte Size!")
     if Url == "" or Url == " ":
-        print("Error Inserting Quantity")
+        messagebox.showinfo("Error", "Inserte Url!")
     else:
        #Revisa si existe registro por FILE NAME
         for i in range(2,(ws.max_row)+1):
@@ -94,13 +96,15 @@ def agregarRegistro():
             ws['B'+lastRow]=Format
             ws['C'+lastRow]=Size
             ws['D'+lastRow]=Url
+            #guardar imagen en el dataset
+            guardar_imagen(File_Name,categoria)
 
-        wb.save(('Maikon Teran/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
-
+        wb.save(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+        messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
     #limpiar antiguo treeview(dataframe)
     clear_tree()
     #Establecer nuevo treeview(dataframe)
-    filename = ('Maikon Teran/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx')
+    filename = ('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx')
     df = pd.read_excel(filename, engine='openpyxl')
     my_tree['column'] = list(df.columns)
     my_tree['show'] = 'headings'
@@ -117,22 +121,148 @@ def agregarRegistro():
 
 ##Funcion editar registro del excel desde el BOTON
 def editarRegistro():
-    messagebox.showwarning("Error",'En Construccion')
+    categoria= ComboboxCategoria.get()
+    wb=openpyxl.load_workbook(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+    ws = wb['Sheet1']
+ 
+    File_Name = str(entryFile_Name.get())
+    Format = str(entryFormat.get())
+    Size = str(entrySize.get())
+    Url = str(entryUrl.get())
+    if File_Name == "" or Format == " ":
+        messagebox.showinfo("Error", "Inserte File_Name!")
+    if Format == "" or Format == " ":     
+        messagebox.showinfo("Error", "Inserte Format!")
+    if Size == "" or Size == " ":
+        messagebox.showinfo("Error", "Inserte Size!")
+    if Url == "" or Url == " ":
+        messagebox.showinfo("Error", "Inserte Url!")
+    else:
+       #Revisa si existe registro por FILE NAME
+        for i in range(2,(ws.max_row)+1):
+            if File_Name==ws['A'+str(i)].value:
+                Found = False
+                ws['A'+str(i)]=File_Name
+                ws['B'+str(i)]=Format
+                ws['C'+str(i)]=Size
+                ws['D'+str(i)]=Url
+                messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
+                #guardar imagen en el dataset
+                guardar_imagen(File_Name,categoria)
+                break
+
+            else:   
+               
+                Found=True
+               
+        if(Found==True):
+            messagebox.showinfo("Error", "File Name no Existe!")
+
+
+        wb.save(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+    #limpiar antiguo treeview(dataframe)
+    clear_tree()
+    #Establecer nuevo treeview(dataframe)
+    filename = ('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx')
+    df = pd.read_excel(filename, engine='openpyxl')
+    my_tree['column'] = list(df.columns)
+    my_tree['show'] = 'headings'
+    #loop thru column list
+    for column in my_tree['column']:
+        my_tree.heading(column,text=column)
+
+    #Colocar datos en treeview
+    df_rows = df.to_numpy().tolist()
+    for row in reverse(df_rows):
+        my_tree.insert('','end', values=row)
+    #pack(enpaquetar) the treeview finally
+    my_tree.grid(row=1, column=5)
+
 
 ##Funcion eliminar registro del excel desde el BOTON
 def eliminarRegistro():
-    messagebox.showerror("Error",'En Construccion')
+    categoria= ComboboxCategoria.get()
+    wb=openpyxl.load_workbook(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+    ws = wb['Sheet1']
+ 
+    File_Name = str(entryFile_Name.get())
+    Format = str(entryFormat.get())
+    Size = str(entrySize.get())
+    Url = str(entryUrl.get())
+    if File_Name == "" or Format == " ":
+        messagebox.showinfo("Error", "Inserte File_Name!")
+    if Format == "" or Format == " ":     
+        messagebox.showinfo("Error", "Inserte Format!")
+    if Size == "" or Size == " ":
+        messagebox.showinfo("Error", "Inserte Size!")
+    if Url == "" or Url == " ":
+        messagebox.showinfo("Error", "Inserte Url!")
+    else:
+       #Revisa si existe registro por FILE NAME
+        for i in range(2,(ws.max_row)+1):
+            if File_Name==ws['A'+str(i)].value:
+                Found = False
+                if messagebox.askyesno('Alerta','Estas seguro que deseas eliminar el registo?'):
+                    ws.delete_rows(i, 1)
+                    eliminar_imagen(File_Name,categoria)
+                    break
+                break
 
-##Funcion abrir imagen
-def abrir_Imagen():
+            else:   
+               
+                Found=True
+               
+
+        if(Found==True):
+            messagebox.showinfo("Error", "File Name no Existe!")
+                    
+        # else:
+        #     lastRow=str((ws.max_row)+1)
+        #     ws['A'+lastRow]=File_Name
+        #     ws['B'+lastRow]=Format
+        #     ws['C'+lastRow]=Size
+        #     ws['D'+lastRow]=Url
+
+        wb.save(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+
+    #limpiar antiguo treeview(dataframe)
+    clear_tree()
+    #Establecer nuevo treeview(dataframe)
+    filename = ('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx')
+    df = pd.read_excel(filename, engine='openpyxl')
+    my_tree['column'] = list(df.columns)
+    my_tree['show'] = 'headings'
+    #loop thru column list
+    for column in my_tree['column']:
+        my_tree.heading(column,text=column)
+
+    #Colocar datos en treeview
+    df_rows = df.to_numpy().tolist()
+    for row in reverse(df_rows):
+        my_tree.insert('','end', values=row)
+    #pack(enpaquetar) the treeview finally
+    my_tree.grid(row=1, column=5)
+
+##Funcion cambiar imagen en la interfaz
+def cambiar_Imagen():
+    global redimensionado
     archivo = filedialog.askopenfilename(title="abrir", filetypes=[("Archivos png","*.png")])
     archivo2 = Image.open(archivo)
-    redimensionado = archivo2.resize((250,250))
+    redimensionado = archivo2.resize((256,256))
     render = ImageTk.PhotoImage(redimensionado)
     imgLabel=""
-    imgLabel = Button(root, image=render, borderwidth=2, relief='ridge',command=abrir_Imagen)
+    imgLabel = Button(root, image=render, borderwidth=2, relief='ridge',command=cambiar_Imagen)
     imgLabel.image= render
     imgLabel.grid(row=1, column=1,columnspan=3)
+
+#Guarda la imagen desde la intefaz con el nombre dado
+def guardar_imagen(file_name,cat):
+    if redimensionado:
+        redimensionado.save(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(cat))+'/images/'+file_name +'.png'))
+
+def eliminar_imagen(file_name,cat):
+    if redimensionado:
+       os.remove(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(cat))+'/images/'+file_name +'.png'))
 
 ##Funcion mostrar Integrantes desde el Menubar
 def integrantes():
@@ -175,8 +305,10 @@ SizeLabel.grid(row=4, column=0, padx=10, pady=10)
 UrlLabel.grid(row=5, column=0, padx=10, pady=10)
 
 #imagen vacia
-img = PhotoImage(file='Maikon Teran/Noimagen.png')
-imgLabel = Button(root, image=img, borderwidth=2, relief='ridge',command=abrir_Imagen)
+global redimensionado
+img = PhotoImage(file='NoImagen.png')
+redimensionado = Image.open('NoImagen.png')
+imgLabel = Button(root, image=img, borderwidth=2, relief='ridge',command=cambiar_Imagen)
 imgLabel.grid(row=1, column=1,columnspan=3)
 # entradas atributos
 entryFile_Name = Entry(root, width=25, bd=5, font=('Arial bold', 15))
