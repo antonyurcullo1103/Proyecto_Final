@@ -2,7 +2,7 @@
 """
 Created on Mon Aug 15 21:25:52 2022
 
-@author: 
+@author:
     ADAN MAIKON TERAN JUAREZ
     ANTONY CRISTIAN URCULLO ROSALES
     VICTOR ERNESTO DE LAS MONTAÑAS ORTEGA LIJERON
@@ -11,7 +11,7 @@ Created on Mon Aug 15 21:25:52 2022
 
 # Importar dependencias
 
-# Para manipular rutas.
+# Para manipular rutas de archivos.
 import os
 # Python Imaging Library (PIL) permite la edición de imágenes directamente
 # desde Python. Soporta una variedad de formatos como GIF, JPEG, PNG, etc.
@@ -85,7 +85,7 @@ class Imagen:
             Metadatos.
 
         """
-        return f"Filepath: {self.filepath}, Filename: {self.filename}, Size: {self.size}, Height: {self.height}, Widht: {self.width}, Format: {self.format}, Mode: {self.mode}, Palette: {self.palette}, Is aminate: {self.is_animate}, Frames in image: {self.frames_in_image}"
+        return f"Filepath: {self.filepath}\nFilename: {self.filename}\nSize: {self.size}\nHeight: {self.height}\nWidht: {self.width}\nFormat: {self.format}\nMode: {self.mode}\nPalette: {self.palette}\nIs aminate: {self.is_animate}\nFrames in image: {self.frames_in_image}"
 
     # Definir las funciones para mostrar propiedades (getters)
     def get_full_path(self):
