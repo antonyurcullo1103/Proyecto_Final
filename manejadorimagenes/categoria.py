@@ -2,7 +2,7 @@
 """
 Created on Mon Aug 18 21:25:52 2022
 
-@author: 
+@author:
     ADAN MAIKON TERAN JUAREZ
     ANTONY CRISTIAN URCULLO ROSALES
     VICTOR ERNESTO DE LAS MONTAÑAS ORTEGA LIJERON
@@ -17,7 +17,7 @@ class Categoria:
 
     def __init__(self, name, folder_path):
         """
-        La función init es la función constructor que nos permite definir 
+        La función init es la función constructor que nos permite definir
         valores para los atributos de una instancia de la clase.
 
         Returns
@@ -47,12 +47,3 @@ class Categoria:
 
     def get_folder_path(self):
         return self.folder_path
-
-
-"""    
-cat = Categoria()
-cat.registrar_categoria("COVID-19", "..//COVID-19_Radiography_Dataset//COVID//")
-cat.registrar_categoria("Normal", "..//COVID-19_Radiography_Dataset//Normal//")
-cat.eliminar_categoria("COVID-19")
-print(cat.get_categorias())
-"""
