@@ -1,76 +1,70 @@
-# COVID-19 BASE DE DATOS DE RAYOS X DE TÓRAX
+# Proyecto_Final
+Fundamentos de la Ingeniería del Software para Científicos de Datos
 
-base de datos de imágenes de rayos X de tórax para casos positivos de COVID-19
-
-![alt text](https://github.com/Shashank-468/Covid-19-Detector/blob/master/covid.jpg)
-
-## Empezamos
-
-Estas instrucciones le proporcionarán una copia del proyecto en funcionamiento en su máquina local para fines de desarrollo y prueba. Consulte implementación para obtener notas sobre cómo implementar el proyecto en un sistema en vivo
-
-### Requisitos previos
-
-Que cosa Nececitas para llevar acabo el proyecto
-
-```
-Tener conocimientos en el Lenguaje Python,Pandas, Numpy, Tkinter ,programación orientada a objetos, 
-versionamiento de código y datos, programación modular y buenas prácticas de programación
-```
-
-
-### Instalacion
-
-Una serie de ejemplos paso a paso que le indican cómo poner en marcha un entorno de desarrollo
-
-#### 1er Paso : Instalarse Python
-
-[Python 3 para Principiantes](https://python-para-impacientes.blogspot.com/2017/02/instalar-python-paso-paso.html)
-
-#### 2do Paso : Instalarse un Editor de Codigo de Desarrollo, les dejos el link de algunos editores
-
-[Download Visual Studio Code](https://code.visualstudio.com/download)
-
-[Download Sublime Text](https://www.sublimetext.com/3)
-
-[Download PyCharm](https://www.jetbrains.com/es-es/pycharm/download/#section=windows)
-
-#### 3er Paso : Instalarse git y DVC para versionamiento de codigo y datasets
-
-[Download Git ](https://git-scm.com/downloads)
-
-[Download DVC](https://dvc.org/)
-
-Tambien puede descargarse Anaconda es un programa de Python que contiene los paquetes más utilizados en temas de ingeniería, matemáticas o ciencia, como pueden ser Matplotlib, SciPy y NumPy. 
-Cuenta con versiones para los tres sistemas operativos más importantes: Mac, Windows y Linux.
-
-[Anaconda Distribution](https://www.anaconda.com/products/distribution)
-
-## Construido con
-
-* [Kaggle](https://www.kaggle.com/datasets/tawsifurrahman/covid19-radiography-database) - Datasets Covid-19
-* [Tkinter](https://docs.python.org/3/library/tkinter.html) - Interfaz de Usuario
-* [Visual Studio Code](https://code.visualstudio.com/) - Editor de Codigo
-* [Sphinx](https://www.sphinx-doc.org/en/master/) - Generador de Documentacion
-* [Diagrama.net](https://www.diagrams.net/) - Creador de Diagramas de Flujo
-
-
-## Versionado
-
-Usamos [Github](https://github.com/) para el control de versiones. Para conocer las versiones disponibles, consulte en el [Repositorio](https://github.com/antonyurcullo1103/Proyecto_Final).
-
-## Autores
-
-* **ADAN MAIKON TERAN JUAREZ** - *Diseño de Interfaz* - [mail](mailto:teranjuarez@gmail.com)
-* **ANTONY CRISTIAN URCULLO ROSALES** - *Cargado Inicial Datasets* - [mail](mailto:antonyurcullo123@gmail.com)
-* **VICTOR ERNESTO DE LAS MONTAÑAS ORTEGA LIJERON** - *Procesamiento del Datasets* - [mail](mailto:vernesto84@gmail.comh)
-* **RONALD TORRICO OVANDO** - *Estructurador del Proyecto* - [mail](mailto:rony.marce.forever@gmail.com)
-
-
-## Licencia
-
-Este proyecto tiene la licencia MIT; consulte el archivo [LICENSE.md](LICENSE.md) para obtener más información
-
-## Agradecimiento
-
-* Gracias al Ingeniero Edwin Salcedo por toda la enseñanza para gestionar este proyecto
-* Gracias a todos los colaboradores para obtener el datasets de todas las imagenes
+1. DEFINICIÓN
+● El proyecto final es una oportunidad para que usted y su equipo implementen lo
+aprendido durante las últimas semanas. Deberán trabajar colaborativamente con
+su equipo para proponer un módulo de gestión de imágenes y su metadata para
+un proyecto de investigación de imagenología médica.
+● Acerca de los datos, todos los equipos deberán utilizar uno de los siguientes
+datasets: COVID-19 Radiography Database, PAPILA Dataset, o un dataset
+médico similar que contenga metadata asociada. En caso de que su equipo se
+plantee cambiar de dataset, este cambio deberá ser confirmado con el docente.
+● La tarea para este proyecto consiste en desarrollar un módulo de
+registro/edición/eliminación de imágenes y sus metadatos usando Pandas,
+Numpy, programación orientada a objetos, versionamiento de código y datos,
+programación modular y buenas prácticas de programación como ser
+documentación y pruebas.
+● El desafío principal para este proyecto final está enfocado en su estrategía de
+modularización y de aplicación de las buenas prácticas vistas en el curso. Sin
+embargo, su equipo es libre de explorar las siguientes interfaces de interacción
+con el usuario: funciones de captura y visualización de datos por la terminal
+(input(), print(), etc), PyQT, TKinter, Web Scraping.
+2. ENTREGABLES
+La entrega debe ser enviada por un solo miembro de equipo.
+● Reporte final y notebooks (70%)
+Para esta sección deberá escribir un reporte detallado en formato IEEE con la
+descripción detallada de los siguientes puntos:
+● Introducción: Explicación del dataset, el planteamiento del problema y
+objetivos del proyecto.
+● Estrategía de modularización y programación orientada a objetos. Incluir
+diagramas de clases y un diagrama sobre la organización de los módulos
+en su proyecto.
+● Implementación de versionamiento de código y de datos. Deberá incluir
+los links y screenshots de su repositorio en Github y en Firebase.
+● Interfaces de interacción con el usuario.
+● Estrategías y métodos de pruebas realizados a los módulos de su
+proyecto.
+● Conclusiones y trabajo futuro
+Para enviar su proyecto, deberá comprimir en un archivo .zip su: reporte,
+script(s) y notebook(s) en formatos .pdf, .py y .ipynb, respectivamente. Su código
+deberá estar bien documentado de manera similar a los tutoriales provistos en el
+curso y deberá contener tanto la implementación de los resultados mencionados
+en el reporte.
+● Video (30%)
+Deberá tener una duración máxima de 5 minutos donde se deberán explicar los
+siguientes puntos:
+- Definición del problema: Describa brevemente el dataset, problema, y/o
+objetivo del proyecto que su grupo está abordando.
+- Estrategía de modularización: Describa su diagramas de clases y de
+organización de archivos. Además, también puede describir aquí su
+implementación de versionamiento de código y datos.
+- Su enfoque y resultados: Describa sus principales resultados para sus
+estrategías de modularización, documentación, y pruebas.
+- Trabajo futuro: ¿Cuáles son las limitaciones de su trabajo? ¿Cuáles son
+las áreas para futuras mejoras?
+Se valorará la creatividad con la que el video sea desarrollado.
+3. FECHAS IMPORTANTES
+Todos los entregables deben ser enviados hasta las 11:59 pm mediante la plataforma
+Moodle. Tomar en cuenta las siguientes fechas límite para los entregables:
+Apartado de Nota Entregable Ponderación Fecha Limite
+Proyecto Final Reporte final y
+notebooks
+70% 18 de Agosto
+Video 30% 18 de Agosto
+4. PLAGIO
+El desarrollo del presente proyecto requiere consultar tanto recursos del módulo como
+fuentes externas: los laboratorios del bootcamp, blogs, libros, sitios web, vídeos, o
+ejemplos de código. En el caso de encontrarse código o documentación copiada
+directamente desde las fuentes externas, su proyecto quedará invalidado y su equipo
+perderá la nota respectiva al proyecto.
