@@ -13,8 +13,7 @@ Created on Mon Aug 14 21:25:52 2022
 import openpyxl
 import glob
 import os
-import pandas as pd
-from tkinter import Tk, ttk, filedialog, messagebox, Button, Label, Menu, Entry, PhotoImage, NO, W, END
+from tkinter import Tk, ttk, filedialog, messagebox, Button, Label, Menu, Entry, PhotoImage, NO, W, END, StringVar
 from PIL import Image, ImageTk
 
 from cargador_kaggle import CargadorKaggle
@@ -27,7 +26,8 @@ class Interfaz:
     dataset_absolute_path = ""
     dataset_process = DatasetProcesses()
     imagen_actual: Imagen = None
-
+    redimensionado = Image.open('NoImagen.png')
+    
     def __init__(self):
 
         # Crear la ventana principal
@@ -46,8 +46,8 @@ class Interfaz:
         self.my_tree.column("SIZE", anchor=W, width=200)
         self.my_tree.column("URL", anchor=W, width=200)
         self.my_tree.grid(row=1, column=4)
-        self.my_tree.bind('<Double-1>', self.item_selected)
-
+        self.my_tree.bind('<Double-1>', self.get_fila)
+        
         # Interfaz GUI(root) del Sistema
         # Crea Menubar
         self.menubar = Menu(self.root)
@@ -78,14 +78,18 @@ class Interfaz:
 
         # imagen vacia
         self.img = PhotoImage(file='Noimagen.png')
-        self.image_label = Button(self.root, image=self.img, borderwidth=2,
-                          relief='ridge', command=self.abrir_imagen)
-        self.image_label.grid(row=1, column=1, columnspan=3)
+        self.image_label = Button(self.root, image=self.img, borderwidth=2, relief='ridge',command=self.cambiar_Imagen)
+        self.image_label.grid(row=1, column=1,columnspan=3)
+        # Dando variables a entradas de texto
+        self.t1 = StringVar()
+        self.t2 = StringVar()
+        self.t3 = StringVar()
+        self.t4 = StringVar()
         # entradas atributos
-        self.file_name_entry = Entry(self.root, width=25, bd=5, font=('Arial bold', 15))
-        self.file_format_entry = Entry(self.root, width=25, bd=5, font=('Arial bold', 15))
-        self.file_size_entry = Entry(self.root, width=25, bd=5, font=('Arial bold', 15))
-        self.file_url_entry = Entry(self.root, width=25, bd=5, font=('Arial bold', 15))
+        self.file_name_entry = Entry(self.root, textvariable=self.t1, width=25, bd=5, font=('Arial bold', 15))
+        self.file_format_entry = Entry(self.root, textvariable=self.t2, width=25, bd=5, font=('Arial bold', 15))
+        self.file_size_entry = Entry(self.root, textvariable=self.t3, width=25, bd=5, font=('Arial bold', 15))
+        self.file_url_entry = Entry(self.root, textvariable=self.t4, width=25, bd=5, font=('Arial bold', 15))
         self.file_name_entry.grid(row=2, column=1, columnspan=3, padx=5, pady=5)
         self.file_format_entry.grid(row=3, column=1, columnspan=3, padx=5, pady=5)
         self.file_size_entry.grid(row=4, column=1, columnspan=3, padx=5, pady=5)
@@ -131,12 +135,31 @@ class Interfaz:
         # Menuarriba
         self.root.config(menu=self.menubar)
 
-    def item_selected(self, event):
-        # Maikon completar aqui la funcion para mostrar los metadatos de la imagen
-        item = self.my_tree.identify('item',event.x,event.y)
-        print("you clicked on", self.my_tree.item(item,"text"))
+    def get_fila(self, event):
+        categoria = self.combo_box_categoria.get()
+        item = self.my_tree.item(self.my_tree.focus())
+        self.t1.set(item['values'][0])
+        self.t2.set(item['values'][1])
+        self.t3.set(item['values'][2])
+        self.t4.set(item['values'][3])
+        self.traer_imagen(self.t1.get(), categoria)
         
-        
+    def traer_imagen(self, file_name, cat):
+        try:
+            ruta_imagen = os.path.join(self.dataset_absolute_path, cat)
+            ruta_imagen = os.path.join(ruta_imagen, "images")
+            nombre_imagen = file_name + ".png"
+            ruta_imagen = os.path.join(ruta_imagen, nombre_imagen)
+            imagenTraida = Image.open(ruta_imagen)
+            redimensionado = imagenTraida.resize((256,256))            
+            render = ImageTk.PhotoImage(redimensionado)
+            self.image_label.configure(image=render)
+            self.image_label.image = render
+        except ValueError:
+            messagebox.showinfo("Alerta","Imagen no puede ser abierto... verifica de nuevo")
+        except FileNotFoundError:
+            messagebox.showinfo("Alerta","Imagen no encontrado...actualiza la imagen")
+
     def cargar_dataset_kaggle(self):
         self.status_bar.config(text = "Iniciando carga de dataset desde Kaggle ...")
         cargador = CargadorKaggle("dataset")
@@ -153,13 +176,13 @@ class Interfaz:
         self.status_bar.config(text = "Lista de categorias actualizada")
 
     # Funcion abrir imagen
-    def abrir_imagen(self):
+    def cambiar_Imagen(self):
         archivo = filedialog.askopenfilename(
             title="abrir", filetypes=[("Archivos png", "*.png")])
         archivo2 = Image.open(archivo)
         redimensionado = archivo2.resize((250, 250))
-        render = ImageTk.PhotoImage(redimensionado)
         
+        render = ImageTk.PhotoImage(redimensionado)
         self.image_label.configure(image=render)
         self.image_label.image = render
         
@@ -209,7 +232,10 @@ class Interfaz:
                 dataset_file = dfile
                 break
         
-        cat_dataframe = self.dataset_process.parseDataset(dataset_file)    
+        self.cargar_tree_view(dataset_file)
+            
+    def cargar_tree_view(self, archivo_dataset):
+        cat_dataframe = self.dataset_process.parseDataset(archivo_dataset)    
         # limpiar antiguo treeview(dataframe)
         self.clear_tree()
         # Establecer nuevo treeview(dataframe)
@@ -223,9 +249,7 @@ class Interfaz:
         df_rows = cat_dataframe.to_numpy().tolist()
         for row in self.reverse(df_rows):
             self.my_tree.insert('', 'end', values=row)
-        
-        self.status_bar.config(text = "Mostrando datos de la categoria '" + seleccion + "'")
-    
+
     # Funcion limpiar filas del treeview
     def clear_tree(self):
         self.my_tree.delete(*self.my_tree.get_children())
@@ -234,10 +258,10 @@ class Interfaz:
     
     def agregar_registro(self):
         categoria = self.combo_box_categoria.get()
-        wb = openpyxl.load_workbook(
-            ('COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
+        archivo_excel = categoria + ".metadata.xlsx"
+        wb = openpyxl.load_workbook(os.path.join(self.dataset_absolute_path, archivo_excel))
         ws = wb['Sheet1']
-    
+
         file_name = str(self.file_name_entry.get())
         file_format = str(self.file_format_entry.get())
         file_size = str(self.file_size_entry.get())
@@ -268,43 +292,122 @@ class Interfaz:
                 ws['B'+lastRow] = file_format
                 ws['C'+lastRow] = file_size
                 ws['D'+lastRow] = file_url
+                
+                # Guardar la imagen en el dataset
+                self.guardar_imagen(file_name, categoria)
+                messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
     
-            wb.save(('COVID-19_Radiography_Dataset/' +
-                    (r"{}".format(categoria))+'.metadata.xlsx'))
-    
-        # limpiar antiguo treeview(dataframe)
-        self.clear_tree()
-        # Establecer nuevo treeview(dataframe)
-        filename = ('COVID-19_Radiography_Dataset/' +
-                    (r"{}".format(categoria))+'.metadata.xlsx')
-        df = pd.read_excel(filename, engine='openpyxl')
-        self.my_tree['column'] = list(df.columns)
-        self.my_tree['show'] = 'headings'
-        # loop thru column list
-        for column in self.my_tree['column']:
-            self.my_tree.heading(column, text=column)
-    
-        # Colocar datos en treeview
-        df_rows = df.to_numpy().tolist()
-        for row in self.reverse(df_rows):
-            self.my_tree.insert('', 'end', values=row)
-        # pack(enpaquetar) the treeview finally
-        self.my_tree.grid(row=1, column=5)
-    
+            wb.save(os.path.join(self.dataset_absolute_path, archivo_excel))
+
+        # Volvemos a cargar los datos
+        self.cargar_tree_view(os.path.join(self.dataset_absolute_path, archivo_excel))
+            
     # Funcion editar registro del excel desde el BOTON
     def editar_registro(self):
-        messagebox.showwarning("Error", 'En Construccion')
-    
+        categoria= self.combo_box_categoria.get()
+        archivo_excel = categoria + ".metadata.xlsx"
+        wb = openpyxl.load_workbook(os.path.join(self.dataset_absolute_path, archivo_excel))
+        ws = wb['Sheet1']
+     
+        file_name = str(self.file_name_entry.get())
+        file_format = str(self.file_format_entry.get())
+        file_size = str(self.file_size_entry.get())
+        file_url = str(self.file_url_entry.get())
+        was_found = False
+        if file_name in ("", " "):
+            messagebox.showinfo("Error", "Inserte File Name!")
+        if file_format in ("", " "):
+            messagebox.showinfo("Error", "Inserte Format!")
+        if file_size in ("", " "):
+            messagebox.showinfo("Error", "Inserte Size!")
+        if file_url in ("", " "):
+            messagebox.showinfo("Error", "Inserte Url!")
+        else:
+           #Revisa si existe registro por FILE NAME
+            for i in range(2,(ws.max_row)+1):
+                if file_name==ws['A'+str(i)].value:
+                    was_found = True
+                    ws['A'+str(i)]=file_name
+                    ws['B'+str(i)]=file_format
+                    ws['C'+str(i)]=file_size
+                    ws['D'+str(i)]=file_url
+                    
+                    # Guardar imagen en el dataset
+                    self.guardar_imagen(file_name, categoria)
+                    # Guardar la imagen en el dataset
+                    wb.save(os.path.join(self.dataset_absolute_path, archivo_excel))
+                    
+                    messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
+                    break
+
+            if was_found == False:
+                messagebox.showinfo("Error", "File Name no Existe!")
+
+        # Volvemos a cargar los datos
+        self.cargar_tree_view(os.path.join(self.dataset_absolute_path, archivo_excel))
+            
     # Funcion eliminar registro del excel desde el BOTON
     def eliminar_registro(self):
-        messagebox.showerror("Error", 'En Construccion')
-    
+        categoria= self.combo_box_categoria.get()
+        archivo_excel = categoria + ".metadata.xlsx"
+        wb = openpyxl.load_workbook(os.path.join(self.dataset_absolute_path, archivo_excel))
+        ws = wb['Sheet1']
+     
+        file_name = str(self.file_name_entry.get())
+        file_format = str(self.file_format_entry.get())
+        file_size = str(self.file_size_entry.get())
+        file_url = str(self.file_url_entry.get())
+        was_found = False
+        if file_name in ("", " "):
+            messagebox.showinfo("Error", "Inserte File Name!")
+        if file_format in ("", " "):
+            messagebox.showinfo("Error", "Inserte Format!")
+        if file_size in ("", " "):
+            messagebox.showinfo("Error", "Inserte Size!")
+        if file_url in ("", " "):
+            messagebox.showinfo("Error", "Inserte Url!")
+        else:
+           #Revisa si existe registro por FILE NAME
+            for i in range(2,(ws.max_row)+1):
+                if file_name==ws['A'+str(i)].value:
+                    was_found = True
+                    if messagebox.askyesno('Alerta','Estas seguro que deseas eliminar el registo?'):
+                        ws.delete_rows(i, 1)
+                        self.eliminar_imagen(file_name, categoria)
+                        messagebox.showinfo("Alerta", "Datos Eliminados Exitosamente!")
+                        # Guardar la imagen en el dataset
+                        wb.save(os.path.join(self.dataset_absolute_path, archivo_excel))
+                        break
+
+            if was_found == False:
+                messagebox.showinfo("Error", "File Name no Existe!")
+
+        # Volvemos a cargar los datos
+        self.cargar_tree_view(os.path.join(self.dataset_absolute_path, archivo_excel))
+            
     # Funcion mostrar Integrantes desde el Menubar
     def integrantes(self):
         messagebox.showinfo("Integrantes", "Adan Maikon Teran Juarez \n"
                             "Ronald Torrico \n"
                             "Victor Ernesto Ortega L \n"
                             "Antony Urcullo Rosales")
+
+    #Guarda la imagen desde la intefaz con el nombre dado
+    def guardar_imagen(self, file_name, cat):
+        if self.redimensionado:
+            ruta_imagen = os.path.join(self.dataset_absolute_path, cat)
+            ruta_imagen = os.path.join(ruta_imagen, "images")
+            nombre_imagen = file_name + ".png"
+            ruta_imagen = os.path.join(ruta_imagen, nombre_imagen)
+            self.redimensionado.save(ruta_imagen)            
+
+    def eliminar_imagen(self, file_name,cat):
+        if self.redimensionado:
+            ruta_imagen = os.path.join(self.dataset_absolute_path, cat)
+            ruta_imagen = os.path.join(ruta_imagen, "images")
+            nombre_imagen = file_name + ".png"
+            ruta_imagen = os.path.join(ruta_imagen, nombre_imagen)
+            os.remove(ruta_imagen)
     
 # Llama a la ventana principal
 inter = Interfaz()
