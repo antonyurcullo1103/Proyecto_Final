@@ -9,8 +9,8 @@ Created on Mon Aug 15 21:25:52 2022
     RONALD TORRICO OVANDO
 """
 
-from imagen import Imagen
-from categoria import Categoria
+from manejadorimagenes import imagen as img
+from manejadorimagenes import categoria as cat
 
 
 class DiagnosticoRayosX:
@@ -19,7 +19,7 @@ class DiagnosticoRayosX:
     de tipo imagen por categoria.
     """
 
-    categorias: (Categoria, Imagen) = dict()
+    categorias: (cat.Categoria, img.Imagen) = dict()
 
     def __init__(self):
         """
@@ -51,13 +51,13 @@ class DiagnosticoRayosX:
             # Preguntamos por la categoria a traves de la ruta absoluta
             if key.get_folder_path() in full_path:
                 # Creamos la instancia de la imagen
-                nueva_imagen = Imagen(full_path)
+                nueva_imagen = img.Imagen(full_path)
                 # Obtenemos sus metadatos
                 nueva_imagen.generate_metadata()
                 value.append(nueva_imagen)
                 break
 
-    def editar_imagen(self, imagen_modificada: Imagen):
+    def editar_imagen(self, imagen_modificada: img.Imagen):
         """
         Actualiza una imagen con sus nuevos valores.
 
@@ -142,7 +142,7 @@ class DiagnosticoRayosX:
         None.
 
         """
-        nueva_cat = Categoria(name, folder_path)
+        nueva_cat = cat.Categoria(name, folder_path)
         has_key = False
         for k in self.categorias:
             if k.get_name() == name:
