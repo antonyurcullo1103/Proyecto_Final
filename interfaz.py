@@ -186,7 +186,7 @@ class Interfaz:
         self.file_size_entry.delete(0, END)
     
     # FUNCIONES
-    # Funcion para
+    # Funcion para mostrar en forma descendente las tuplas
     def reverse(self, tuples):
         new_tup = tuples[::-1]
         return new_tup
