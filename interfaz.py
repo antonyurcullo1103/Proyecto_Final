@@ -1,5 +1,4 @@
 import io
-from msilib.schema import ComboBox
 import os
 import openpyxl
 import pandas as pd
@@ -98,9 +97,10 @@ def agregarRegistro():
             ws['D'+lastRow]=Url
             #guardar imagen en el dataset
             guardar_imagen(File_Name,categoria)
+            messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
 
         wb.save(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(categoria))+'.metadata.xlsx'))
-        messagebox.showinfo("Alerta", "Datos Modificados Exitosamente!")
+        
     #limpiar antiguo treeview(dataframe)
     clear_tree()
     #Establecer nuevo treeview(dataframe)
@@ -205,6 +205,7 @@ def eliminarRegistro():
                 if messagebox.askyesno('Alerta','Estas seguro que deseas eliminar el registo?'):
                     ws.delete_rows(i, 1)
                     eliminar_imagen(File_Name,categoria)
+                    messagebox.showinfo("Alerta", "Datos Eliminados Exitosamente!")
                     break
                 break
 
@@ -262,17 +263,36 @@ def guardar_imagen(file_name,cat):
 
 def eliminar_imagen(file_name,cat):
     if redimensionado:
-       os.remove(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(cat))+'/images/'+file_name +'.png'))
+        os.remove(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(cat))+'/images/'+file_name +'.png'))
 
+def traer_imagen(file_name,cat):
+    try:
+        imagenTraida = Image.open(('dataset/COVID-19_Radiography_Dataset/'+(r"{}".format(cat))+'/images/'+file_name +'.png'))
+        redimensionado = imagenTraida.resize((256,256))
+        render = ImageTk.PhotoImage(redimensionado)
+        imgLabel=""
+        imgLabel = Button(root, image=render, borderwidth=2, relief='ridge',command=cambiar_Imagen)
+        imgLabel.image= render
+        imgLabel.grid(row=1, column=1,columnspan=3)                           
+    except ValueError:
+        messagebox.showinfo("Alerta","Imagen no puede ser abierto... verifica de nuevo")
+    except FileNotFoundError:
+        messagebox.showinfo("Alerta","Imagen no encontrado...actualiza la imagen")
+        
 ##Funcion mostrar Integrantes desde el Menubar
 def integrantes():
     messagebox.showinfo("Integrantes","Adan Maikon Teran Juarez \n"
                         "Ronald Torrico \n"
                         "Victor Ernesto Ortega L \n"
                         "Antony Urcullo Rosales")
-
-
-
+def get_fila(event):
+    categoria = ComboboxCategoria.get()
+    item = my_tree.item(my_tree.focus())
+    t1.set(item['values'][0])
+    t2.set(item['values'][1])
+    t3.set(item['values'][2])
+    t4.set(item['values'][3])
+    traer_imagen(t1.get(),categoria)
 
 #########Interfaz GUI(root) del Sistema
 #Crea Menubar
@@ -310,11 +330,17 @@ img = PhotoImage(file='NoImagen.png')
 redimensionado = Image.open('NoImagen.png')
 imgLabel = Button(root, image=img, borderwidth=2, relief='ridge',command=cambiar_Imagen)
 imgLabel.grid(row=1, column=1,columnspan=3)
+
+#Dando Variables a entradas de texto
+t1 = StringVar()
+t2 = StringVar()
+t3 = StringVar()
+t4 = StringVar()
 # entradas atributos
-entryFile_Name = Entry(root, width=25, bd=5, font=('Arial bold', 15))
-entryFormat = Entry(root, width=25, bd=5, font=('Arial bold', 15))
-entrySize = Entry(root, width=25, bd=5, font=('Arial bold', 15))
-entryUrl = Entry(root, width=25, bd=5, font=('Arial bold', 15))
+entryFile_Name = Entry(root, textvariable=t1, width=25, bd=5, font=('Arial bold', 15))
+entryFormat = Entry(root, textvariable=t2, width=25, bd=5, font=('Arial bold', 15))
+entrySize = Entry(root, textvariable=t3, width=25, bd=5, font=('Arial bold', 15))
+entryUrl = Entry(root, textvariable=t4, width=25, bd=5, font=('Arial bold', 15))
 entryFile_Name.grid(row=2, column=1, columnspan=3, padx=5, pady=5)
 entryFormat.grid(row=3, column=1, columnspan=3, padx=5, pady=5)
 entrySize.grid(row=4, column=1, columnspan=3, padx=5, pady=5)
@@ -347,7 +373,7 @@ my_tree.column("FORMAT", anchor=W, width=200)
 my_tree.column("SIZE", anchor=W, width=200)
 my_tree.column("URL", anchor=W, width=200)
 my_tree.grid(row=1, column=4)
-
+my_tree.bind('<Double 1>',get_fila)
 #Combobox de categoria
 ComboboxCategoria = ttk.Combobox(
     root, values=["Covid","Lung_Opacity","Normal","Viral Pneumonia"],  state="readonly",width=25,
