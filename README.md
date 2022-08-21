@@ -52,6 +52,7 @@ Cuenta con versiones para los tres sistemas operativos más importantes: Mac, Wi
 * [Visual Studio Code](https://code.visualstudio.com/) - Editor de Codigo
 * [Sphinx](https://www.sphinx-doc.org/en/master/) - Generador de Documentacion
 * [Diagrama.net](https://www.diagrams.net/) - Creador de Diagramas de Flujo
+* [PEP8](https://elpythonista.com/pep-8) - Guia de estilo de Codificacion Python
 
 
 ## Versionado
